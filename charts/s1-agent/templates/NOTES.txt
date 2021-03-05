@@ -19,7 +19,10 @@ Configuration options used to deploy:
 * The name of the PRE-EXISTING site-key secret to use is '{{ .Values.secrets.site_key.name }}'
 {{- end }}
 {{- if .Values.configuration.custom_ca }}
-* A custom CA certificate will be loaded into the agent image.
+* A custom CA certificate will be loaded into the agent image. These files were loaded. If the list is empty, then you probably did not copy the certificate files to "files/*.pem"
+{{- range $path, $_ := .Files.Glob "files/*.pem" }}
+  -> {{ base $path }}
+{{- end }}
 {{- end }}
 {{- if .Values.configuration.custom_intermediate_ca }}
 * A custom INTERMEDIATE (issuer) certificate will be loaded into the agent image.
