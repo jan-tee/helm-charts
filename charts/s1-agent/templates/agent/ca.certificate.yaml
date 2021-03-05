@@ -10,4 +10,12 @@ type: Opaque
 data:
   ca.pem: |-
 {{ $file | b64enc | indent 4 }}
+
+{{- if .Values.configuration.custom_intermediate_ca }}
+{{- $intermediate := .Files.Get "files/intermediate.pem" }}
+  intermediate.pem: |-
+{{ $intermediate | b64enc | indent 4 }}
+{{- end }}
+
+
 {{- end }}

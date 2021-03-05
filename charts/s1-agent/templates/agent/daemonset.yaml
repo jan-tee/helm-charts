@@ -63,6 +63,11 @@ spec:
             mountPath: /usr/local/share/ca-certificates/ca.pem
             subPath: ca.pem
 {{- end}}
+{{- if .Values.configuration.custom_intermediate_ca }}
+          - name: intermediate-cert
+            mountPath: /usr/local/share/ca-certificates/intermediate.pem
+            subPath: intermediate.pem
+{{- end}}
           - name: debugfs
             mountPath: /sys/kernel/debug/
           - name: host
@@ -90,6 +95,11 @@ spec:
       volumes:
 {{- if .Values.configuration.custom_ca }}
         - name: ca-cert
+          secret:
+            secretName: {{ .Release.Name }}-custom-ca
+{{- end }}
+{{- if .Values.configuration.custom_intermediate_ca }}
+        - name: intermediate-cert
           secret:
             secretName: {{ .Release.Name }}-custom-ca
 {{- end }}

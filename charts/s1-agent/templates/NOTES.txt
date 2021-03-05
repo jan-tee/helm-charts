@@ -21,6 +21,9 @@ Configuration options used to deploy:
 {{- if .Values.configuration.custom_ca }}
 * A custom CA certificate will be loaded into the agent image.
 {{- end }}
+{{- if .Values.configuration.custom_intermediate_ca }}
+* A custom INTERMEDIATE (issuer) certificate will be loaded into the agent image.
+{{- end }}
 {{- if .Values.configuration.proxy }}
 * A proxy will be used between AGENTS and MANAGEMENT: '{{ .Values.configuration.proxy }}'
 {{- else }}
