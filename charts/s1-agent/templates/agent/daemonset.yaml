@@ -59,15 +59,12 @@ spec:
           value: "{{ .Values.configuration.env.heap_trimming_interval }}"
         volumeMounts:
 {{- if .Values.configuration.custom_ca }}
-          - name: ca-cert
-            mountPath: /usr/local/share/ca-certificates/ca.pem
-            subPath: ca.pem
-{{- end}}
-{{- if .Values.configuration.custom_intermediate_ca }}
-          - name: intermediate-cert
-            mountPath: /usr/local/share/ca-certificates/intermediate.pem
-            subPath: intermediate.pem
-{{- end}}
+{{- range $path, $_ := .Files.Glob "files/*.pem" }}
+          - name: ca-certs
+            mountPath: "/usr/local/share/ca-certificates/{{ base $path }}"
+            subPath: "{{ base $path }}"
+{{- end }}
+{{- end }}
           - name: debugfs
             mountPath: /sys/kernel/debug/
           - name: host
@@ -94,14 +91,9 @@ spec:
               - SYSLOG
       volumes:
 {{- if .Values.configuration.custom_ca }}
-        - name: ca-cert
+        - name: ca-certs
           secret:
-            secretName: {{ .Release.Name }}-custom-ca
-{{- end }}
-{{- if .Values.configuration.custom_intermediate_ca }}
-        - name: intermediate-cert
-          secret:
-            secretName: {{ .Release.Name }}-custom-ca
+            secretName: "{{ $.Release.Name }}-custom-ca"
 {{- end }}
         - name: debugfs
           hostPath:

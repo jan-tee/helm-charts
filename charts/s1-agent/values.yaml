@@ -17,9 +17,8 @@ configuration:
     heap_trimming_enable: false # to enable heap trimming, set to 'true'
     heap_trimming_interval: 120 # help trimming default interval (s)
   # If you are using an on-prem console with an un-trusted CA, you need to provide the CA
-  # certificate under files/ca.pem in PEM format, and files/intermediate.pem, respectively
+  # certificate(s) and intermediaries, if needed, under files/*.pem in PEM format
   custom_ca: false
-  custom_intermediate_ca: false
   imagePullPolicy: "" # defaults to IfNotPresent
   platform:
     type: kubernetes # platform-specific support: defaults to kubernetes. possible values: kubernetes, openshift
