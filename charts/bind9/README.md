@@ -14,8 +14,9 @@ tsig-keygen -a hmac-sha256 k8s-external-dns
 Then, deploy:
 
 ```bash
+helm repo add tietze.io https://charts.tietze.io
 helm upgrade --install --namespace external-dns \
-  authoritative-dns jan-tee/bind9 \
+  authoritative-dns tietze.io/bind9 \
   --set service.annotations."metallb\.universe\.tf/loadBalancerIPs"="<IP for MetalLB>" \
   --set service.annotations."metallb\.universe\.tf/allow-shared-ip"="<key to share IP for TCP/UDP DNS in MetalLB>" \
   --set keys.k8s-external-dns.secret="<TSIG secret>"
