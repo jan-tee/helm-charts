@@ -3,6 +3,16 @@ entries:
   bind9:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2022-10-05T08:56:15.017932422Z"
+    description: bind9 DNS Helm chart for simple RFC2136 dynamic DNS self-hosting
+    digest: 3bf7aff7405c77879c1d1d051c537beab69de1d9e5b8896d28e3e8782b19c70b
+    name: bind9
+    type: application
+    urls:
+    - https://github.com/jan-tee/helm-charts/releases/download/bind9-1.0.1/bind9-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2022-10-05T08:51:06.759256374Z"
     description: bind9 DNS Helm chart for simple RFC2136 dynamic DNS self-hosting
     digest: 33c3711af9970909b4d241e9827f4447598c1b216c1a6c9a19cebdf495971406
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/jan-tee/helm-charts/releases/download/bind9-1.0.0/bind9-1.0.0.tgz
     version: 1.0.0
-generated: "2022-10-05T08:51:06.759262074Z"
+generated: "2022-10-05T08:56:15.017942722Z"
