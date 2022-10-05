@@ -18,6 +18,8 @@ spec:
       labels:
         app: {{ $.Release.Name | quote }}
         component: bind9
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }} # ensure this deployment is recreated on each deployment operation so that updated configmaps will be reloaded
     spec:
       {{- if $.Values.imagePullSecrets }}
       imagePullSecrets:
@@ -82,5 +84,6 @@ spec:
                 mountPath: /var/lib/bind/zones/
               - name: zones-default
                 mountPath: /zone-defaults/
-          command: ["bash", "-c", "cp -nv /zone-defaults/* /var/lib/bind/zones/ ; chmod 0774 /var/lib/bind/zones/ ; chown -Rv bind.bind /var/lib/bind/zones -Rv ; echo `date` > /var/lib/bind/zones/.init-container.timestamp"]
+          # overwrite zone files with data supplied in helm chart; all dynamic records must be re-registered after a restart
+          command: ["bash", "-c", "cp -fv /zone-defaults/* /var/lib/bind/zones/ ; chmod 0774 /var/lib/bind/zones/ ; chown -Rv bind.bind /var/lib/bind/zones -Rv ; echo `date` > /var/lib/bind/zones/.init-container.timestamp"]
       {{- end }}

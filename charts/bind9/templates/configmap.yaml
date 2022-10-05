@@ -15,30 +15,30 @@ data:
     {{ $content | nindent 4 }}
   {{- end }}
   named.conf.zones: |
-    {{- range $zone, $content := $.Values.zones }}
-    zone "{{ $zone }}" {
-      // auto-generated for zone {{ $zone }}
+    {{- range $index, $content := $.Values.zones }}
+    zone "{{ $content.zone }}" {
+      // auto-generated for zone {{ $content.zone }}
       type master;
-      file "/var/lib/bind/zones/{{ $zone }}.zone";
+      file "/var/lib/bind/zones/{{ $content.zone }}.zone";
 
       allow-transfer {
-        {{- range $key_name, $key_data := $.Values.keys }}
+        {{- range $key_name := $content.keys }}
         key "{{ $key_name }}";
         {{- end }}
         internals;
       };
       update-policy {
-        {{- range $key_name, $key_data := $.Values.keys }}
+        {{- range $key_name := $content.keys }}
         grant "{{ $key_name }}" zonesub ANY;
         {{- end }}
       };
     };
     {{- end }}
   named.conf.keys: |
-    {{- range $key_name, $key_data := $.Values.keys }}
-    key "{{ $key_name }}" {
-      algorithm {{ default $key_data.algo "hmac-sha256" }};
-      secret "{{ required "You MUST specify a secret for every TSIG key." $key_data.secret }}";
+    {{- range $index, $key := $.Values.keys }}
+    key "{{ $key.name }}" {
+      algorithm {{ default "hmac-sha256" $key.algo }};
+      secret "{{ required "You MUST specify a secret for every TSIG key." $key.secret }}";
     };
     {{- end }}
 ---
@@ -47,24 +47,26 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "{{ $.Release.Name }}-zone-defaults"
-data:
+data: 
 # all files from the helm chart's "files/" directory
-{{- range $zone, $content := $.Values.zones }}
-  {{ printf "%s.zone" $zone }}: |
+{{- range $index, $data := $.Values.zones }}
+  {{ printf "%s.zone" $data.zone }}: |
     $ORIGIN .
     $TTL 60 ; 1 minute
-    {{ $zone }}            IN SOA  dns.{{ $zone }}. root.{{ $zone }}. (
+    {{ $data.zone }}            IN SOA  dns.{{ $data.zone }}. root.{{ $data.zone }}. (
                                     40         ; serial
                                     60         ; refresh (1 minute)
                                     60         ; retry (1 minute)
                                     60         ; expire (1 minute)
                                     60         ; minimum (1 minute)
                                     )
-                            NS      dns.{{ $zone }}.
-    $ORIGIN {{ $zone }}.
+                            NS      dns.{{ $data.zone }}.
+    $ORIGIN {{ $data.zone }}.
     $TTL 0  ; 0 seconds
     dns                IN   A       127.0.0.1
-    {{ $content.records | nindent 4 }}
+    {{- range $record := $data.records }}
+    {{- $record | nindent 4 }}
+    {{- end }}
 
 {{- end }}
 ---

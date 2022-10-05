@@ -19,5 +19,10 @@ helm upgrade --install --namespace external-dns \
   authoritative-dns tietze.io/bind9 \
   --set service.annotations."metallb\.universe\.tf/loadBalancerIPs"="<IP for MetalLB>" \
   --set service.annotations."metallb\.universe\.tf/allow-shared-ip"="<key to share IP for TCP/UDP DNS in MetalLB>" \
-  --set keys.k8s-external-dns.secret="<TSIG secret>"
+  --set keys[0].name="k8s-external-dns" \
+  --set keys[0].secret="<TSIG secret>" \
+  --set zones[0].zone="k8s.lab" \
+  --set zones[0].keys[0]="k8s-external-dns" \
+  --set zones[0].records[0]="firewall IN A 192.168.42.1" \
+  --set zones[0].records[1]="another-record IN A 192.168.42.100"
 ```

@@ -1,4 +1,4 @@
-image: ubuntu/bind9
+image: ubuntu/bind9:9.16-20.04_beta
 imagePullSecrets: null
 
 extraFiles:
@@ -10,7 +10,7 @@ extraFiles:
     // Consider adding the 1918 zones here, if they are not used in your
     // organization
     //include "/etc/bind/zones.rfc1918";
-    
+
     acl "internals" {
       10.0.0.0/8;
       192.168.0.0/16;
@@ -19,20 +19,21 @@ extraFiles:
 
 keys:
   # generate keys in BIND with this command: "tsig-keygen -a hmac-sha256 k8s-external-dns"
-  # k8s-external-dns:
-  #  algo: "hmac-sha256"
-  #  secret: null
+  - name: k8s-external-dns
+    algo: "hmac-sha256"
+    secret: null
 
 zones:
   # only specify custom records here that should be part of the zone.
   # create an entry for each zones.
   # if you have zones that don't need any entries, just define them as an empty string:
   # my.zone: ""
-  # k8s.lab:
-  #  keys: k8s-external-dns
-  #  records: |
-  #    firewall           IN  A    192.168.42.1
-
+  - zone: k8s.lab
+    keys:
+      - k8s-external-dns
+    records: |
+      - "frosty IN A 192.168.42.1"
+      - "leo IN A 192.168.42.23"
 
 service:
   annotations: {}
@@ -41,7 +42,7 @@ persistence:
   enabled: true
   volume:
     # The data for the PersistentVolumeClaim for state storage. Typically you'll want to add at least a storageClassName
-    storageClassName: nfs
+    # storageClassName: nfs
     accessModes:
       - ReadWriteOnce
     resources:
