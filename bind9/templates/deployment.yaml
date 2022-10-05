@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name | quote }}
+  labels:
+    app: {{ $.Release.Name | quote }}
+    component: bind9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name | quote }}
+      component: bind9
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ $.Release.Name | quote }}
+        component: bind9
+    spec:
+      {{- if $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecrets | quote }}
+      {{- end }}
+      containers:
+        - name: bind9
+          imagePullPolicy: Always
+          image: "{{ required "You need to specify the image and version tag" $.Values.image }}"
+          tty: true
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   runAsUser: 1000
+          volumeMounts:
+            - name: config
+              mountPath: /etc/bind/
+          {{- if $.Values.persistence.enabled }}
+            - name: zones
+              mountPath: /var/lib/bind/zones/
+          {{- end }}
+          resources:
+            limits:
+              cpu: 1
+              memory: 300M
+            requests:
+              cpu: 100m
+              memory: 50M
+          livenessProbe:
+            tcpSocket:
+              port: 53
+            initialDelaySeconds: 20
+            timeoutSeconds: 4
+            periodSeconds: 2
+          readinessProbe:
+            tcpSocket:
+              port: 53
+            initialDelaySeconds: 2
+            timeoutSeconds: 4
+            periodSeconds: 2
+      volumes:
+        - name: config
+          configMap:
+            name: "{{ $.Release.Name }}-config"
+            defaultMode: 0644            
+        {{- if $.Values.persistence.enabled }}
+        - name: zones
+          persistentVolumeClaim:
+            claimName: "{{ $.Release.Name }}-zones"
+        - name: zones-default
+          configMap:
+            name: "{{ $.Release.Name }}-zone-defaults"
+            defaultMode: 0666            
+        {{- end }}
+      {{- if $.Values.persistence.enabled }}
+      initContainers:
+        - name: zone-initializer
+          imagePullPolicy: Always
+          image: "{{ required "You need to specify the image and version tag" $.Values.image }}"
+          tty: true
+          volumeMounts:
+              - name: zones
+                mountPath: /var/lib/bind/zones/
+              - name: zones-default
+                mountPath: /zone-defaults/
+          command: ["bash", "-c", "cp -nv /zone-defaults/* /var/lib/bind/zones/ ; chmod 0774 /var/lib/bind/zones/ ; chown -Rv bind.bind /var/lib/bind/zones -Rv ; echo `date` > /var/lib/bind/zones/.init-container.timestamp"]
+      {{- end }}
