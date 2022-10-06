@@ -2,6 +2,6 @@ apiVersion: v2
 name: bind9
 description: bind9 DNS Helm chart for simple RFC2136 dynamic DNS self-hosting
 type: application
-version: 1.0.4
+version: 1.0.5
 appVersion: "1.0.09.16-20.04_beta"
 home: https://github.com/jan-tee/helm-charts
