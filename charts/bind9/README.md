@@ -2,7 +2,7 @@
 
 
 
-![Version: 1.0.6](https://img.shields.io/badge/Version-1.0.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.16-20.04_beta](https://img.shields.io/badge/AppVersion-9.16--20.04_beta-informational?style=flat-square) 
+![Version: 1.0.7](https://img.shields.io/badge/Version-1.0.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.16-20.04_beta](https://img.shields.io/badge/AppVersion-9.16--20.04_beta-informational?style=flat-square) 
 
 bind9 DNS Helm chart for simple RFC2136 dynamic DNS self-hosting
 
@@ -32,7 +32,11 @@ helm upgrade --install --namespace external-dns \
   --set zones[0].records[1]="another-record IN A 192.168.42.100"
 ```
 
+## Maintainers
 
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jan Tietze | <jan@tietze.io> | <http://tietze.io> |
 
 
 
