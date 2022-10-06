@@ -1,7 +1,13 @@
+# -- (string) The image to use
 image: ubuntu/bind9:9.16-20.04_beta
+# -- (string) The name of the registry secret to use
 imagePullSecrets: null
 
+# -- (list) Any extra files that should go into `/etc/bind/`
 extraFiles:
+  # -- Any additional settings for `named.conf.local`; the ACL "internals"
+  # MUST remain defined, as it is used to give "AXFR" zone privileges (zone
+  # transfer)
   named.conf.local: |
     //
     // Do any local configuration here
@@ -17,32 +23,38 @@ extraFiles:
       172.16.0.0/12;
     };
 
+# -- (list) List of TSIG keys for dynamic updates. Generate keys in BIND with this command:
+# `tsig-keygen -a hmac-sha256 k8s-external-dns``
 keys:
-  # generate keys in BIND with this command: "tsig-keygen -a hmac-sha256 k8s-external-dns"
-  - name: k8s-external-dns
+  - # -- (string) The name of the key
+    name: k8s-external-dns
+    # -- (string) The key algo; defaults to "hmac-sha256"
     algo: "hmac-sha256"
+    # -- (string) The TSIG secret for this key
     secret: null
 
+# -- list DNS zones (domains).
 zones:
-  # only specify custom records here that should be part of the zone.
-  # create an entry for each zones.
-  # if you have zones that don't need any entries, just define them as an empty string:
-  # my.zone: ""
-  - zone: k8s.lab
+  - # -- (string) zone name
+    zone: k8s.lab 
+    # -- list(string) The names of keys authorized to update the zone
     keys:
       - k8s-external-dns
+    # -- list(string) Any extra records you want to add for the zone. E.g. `frosty IN A 192.168.42.1`. One record per list entry.
     records: |
       - "frosty IN A 192.168.42.1"
       - "leo IN A 192.168.42.23"
 
+# -- Service settings
 service:
+  # -- object Annotations to add to the service
   annotations: {}
 
 persistence:
+  # -- Set to `true` to enable persistance for zone files
   enabled: true
+  # -- The data for the `PersistentVolumeClaim` for state storage. Typically you'll want to add at least a storageClassName
   volume:
-    # The data for the PersistentVolumeClaim for state storage. Typically you'll want to add at least a storageClassName
-    # storageClassName: nfs
     accessModes:
       - ReadWriteOnce
     resources:
