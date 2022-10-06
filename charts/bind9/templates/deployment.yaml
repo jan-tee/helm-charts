@@ -28,7 +28,7 @@ spec:
       containers:
         - name: bind9
           imagePullPolicy: Always
-          image: "{{ required "You need to specify the image and version tag" $.Values.image }}"
+          image: "{{ default (printf "ubuntu/bind9:%s" $.Chart.AppVersion) $.Values.image }}"
           tty: true
           # securityContext:
           #   allowPrivilegeEscalation: false

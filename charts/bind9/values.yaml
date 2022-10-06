@@ -1,5 +1,5 @@
-# -- (string) The image to use
-image: ubuntu/bind9:9.16-20.04_beta
+# -- (string) The image to use. Defaults to ubuntu/bind9 and in the chart's `appVersion`.
+image: 
 # -- (string) The name of the registry secret to use
 imagePullSecrets: null
 

@@ -2,7 +2,7 @@
 
 
 
-![Version: 1.0.3](https://img.shields.io/badge/Version-1.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.09.16-20.04_beta](https://img.shields.io/badge/AppVersion-1.0.09.16--20.04_beta-informational?style=flat-square) 
+![Version: 1.0.4](https://img.shields.io/badge/Version-1.0.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.09.16-20.04_beta](https://img.shields.io/badge/AppVersion-1.0.09.16--20.04_beta-informational?style=flat-square) 
 
 bind9 DNS Helm chart for simple RFC2136 dynamic DNS self-hosting
 
@@ -44,7 +44,7 @@ helm upgrade --install --namespace external-dns \
 |-----|------|---------|-------------|
 | extraFiles | list | `{"named.conf.local":"//\n// Do any local configuration here\n//\n \n// Consider adding the 1918 zones here, if they are not used in your\n// organization\n//include \"/etc/bind/zones.rfc1918\";\n\nacl \"internals\" {\n  10.0.0.0/8;\n  192.168.0.0/16;\n  172.16.0.0/12;\n};\n"}` | Any extra files that should go into `/etc/bind/` |
 | extraFiles."named.conf.local" | string | `"//\n// Do any local configuration here\n//\n \n// Consider adding the 1918 zones here, if they are not used in your\n// organization\n//include \"/etc/bind/zones.rfc1918\";\n\nacl \"internals\" {\n  10.0.0.0/8;\n  192.168.0.0/16;\n  172.16.0.0/12;\n};\n"` | Any additional settings for `named.conf.local`; the ACL "internals" MUST remain defined, as it is used to give "AXFR" zone privileges (zone transfer) |
-| image | string | `"ubuntu/bind9:9.16-20.04_beta"` | The image to use |
+| image | string | `nil` | The image to use. Defaults to ubuntu/bind9 and in the chart's `appVersion`. |
 | imagePullSecrets | string | `nil` | The name of the registry secret to use |
 | keys | list | `[{"algo":"hmac-sha256","name":"k8s-external-dns","secret":null}]` | List of TSIG keys for dynamic updates. Generate keys in BIND with this command: `tsig-keygen -a hmac-sha256 k8s-external-dns`` |
 | keys[0].algo | string | `"hmac-sha256"` | The key algo; defaults to "hmac-sha256" |
