@@ -106,4 +106,20 @@ entries:
     urls:
     - https://github.com/jan-tee/helm-charts/releases/download/bind9-1.0.0/bind9-1.0.0.tgz
     version: 1.0.0
-generated: "2022-10-20T10:34:22.11939157Z"
+  filegator:
+  - apiVersion: v2
+    appVersion: v7.8.7
+    created: "2022-10-20T10:51:11.462870803Z"
+    description: Deploys the 'FileGator' web file sharing solution
+    digest: e170bf07a9bc1f6c4aa8139a35188466990aeac225c3c77265772404b7f8c165
+    home: https://github.com/jan-tee/helm-charts
+    maintainers:
+    - email: jan@tietze.io
+      name: Jan Tietze
+      url: http://tietze.io
+    name: filegator
+    type: application
+    urls:
+    - https://github.com/jan-tee/helm-charts/releases/download/filegator-1.0.1/filegator-1.0.1.tgz
+    version: 1.0.1
+generated: "2022-10-20T10:51:11.462894503Z"
