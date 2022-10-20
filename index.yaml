@@ -1,5 +1,21 @@
 apiVersion: v1
 entries:
+  FileGator:
+  - apiVersion: v2
+    appVersion: v7.8.7
+    created: "2022-10-20T10:34:22.119370368Z"
+    description: Deploys the 'FileGator' web file sharing solution
+    digest: 534e5a7815eea854a7f58fd1681d4a6e45f367a7fe764a3b2319b567e6a88029
+    home: https://github.com/jan-tee/helm-charts
+    maintainers:
+    - email: jan@tietze.io
+      name: Jan Tietze
+      url: http://tietze.io
+    name: FileGator
+    type: application
+    urls:
+    - https://github.com/jan-tee/helm-charts/releases/download/FileGator-1.0.0/FileGator-1.0.0.tgz
+    version: 1.0.0
   bind9:
   - apiVersion: v2
     appVersion: 9.16-20.04_beta
@@ -90,4 +106,4 @@ entries:
     urls:
     - https://github.com/jan-tee/helm-charts/releases/download/bind9-1.0.0/bind9-1.0.0.tgz
     version: 1.0.0
-generated: "2022-10-06T10:36:21.74809719Z"
+generated: "2022-10-20T10:34:22.11939157Z"
