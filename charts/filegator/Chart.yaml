@@ -1,8 +1,8 @@
 apiVersion: v2
-name: FileGator
+name: filegator
 description: Deploys the 'FileGator' web file sharing solution
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "v7.8.7"
 home: https://github.com/jan-tee/helm-charts
 maintainers:
