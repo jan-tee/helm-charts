@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name | quote }}
+  labels:
+    app: {{ $.Release.Name | quote }}
+    component: filegator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name | quote }}
+      component: filegator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ $.Release.Name | quote }}
+        component: filegator
+    spec:
+      {{- if $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecrets | quote }}
+      {{- end }}
+      securityContext:
+        fsGroup: 33
+      containers:
+        - name: filegator
+          imagePullPolicy: Always
+          image: {{ default (printf "filegator/filegator:%s" $.Chart.AppVersion) $.Values.image | quote }}
+          tty: true
+          securityContext:
+            allowPrivilegeEscalation: false
+          {{- if $.Values.persistence.enabled }}
+          volumeMounts:
+            - name: private
+              mountPath: /var/www/filegator/private
+            - name: repository
+              mountPath: /var/www/filegator/repository
+            - name: init
+              mountPath: /app/init
+          {{- end }}
+          resources:
+            limits:
+              cpu: 1
+              memory: 300M
+            requests:
+              cpu: 100m
+              memory: 50M
+          command:
+            - /app/init/run.sh
+      volumes:
+        - name: init
+          configMap:
+            name: "{{ $.Release.Name }}-init"
+            defaultMode: 0755
+      {{- if $.Values.persistence.enabled }}
+        - name: private
+          persistentVolumeClaim:
+            claimName: "{{ $.Release.Name }}-private"
+        - name: repository
+          persistentVolumeClaim:
+            claimName: "{{ $.Release.Name }}-repository"
+        - name: default-private
+          configMap:
+            name: "{{ $.Release.Name }}-private-default"
+            defaultMode: 0666
+      {{- end }}
+      {{- if $.Values.persistence.enabled }}
+      initContainers:
+        - name: init-persistence
+          imagePullPolicy: Always
+          image: "bash"
+          tty: true
+          volumeMounts:
+            - name: private
+              mountPath: /var/www/filegator/private
+            - name: repository
+              mountPath: /var/www/filegator/repository
+            - name: default-private
+              mountPath: /app/default/private
+            - name: init
+              mountPath: /app/init
+          command:
+            - /app/init/init.sh
+      {{- end }}

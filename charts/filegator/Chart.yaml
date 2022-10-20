@@ -1,0 +1,11 @@
+apiVersion: v2
+name: FileGator
+description: Deploys the 'FileGator' web file sharing solution
+type: application
+version: 1.0.0
+appVersion: "v7.8.7"
+home: https://github.com/jan-tee/helm-charts
+maintainers:
+  - name: Jan Tietze
+    email: jan@tietze.io
+    url: http://tietze.io

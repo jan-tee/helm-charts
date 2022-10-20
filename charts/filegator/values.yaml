@@ -1,0 +1,33 @@
+# -- (string) The image to use. Defaults to ubuntu/bind9 and in the chart's `appVersion`.
+image: 
+# -- (string) The name of the registry secret to use
+imagePullSecrets: null
+
+# -- Service settings
+service:
+  # -- object Annotations to add to the service
+  annotations: {}
+
+defaults:
+  # -- (string) Default password for admin user
+  password: 
+
+persistence:
+  # -- Set to `true` to enable persistence 
+  enabled: true
+  # -- The data for the `PersistentVolumeClaim` for data storage. Typically you'll want to add at least a storageClassName
+  repository:
+    volume:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+  # -- The data for the `PersistentVolumeClaim` for config storage. Typically you'll want to add at least a storageClassName
+  private:
+    volume:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100M

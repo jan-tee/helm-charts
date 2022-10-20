@@ -1,0 +1,54 @@
+# Default configuration files
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $.Release.Name }}-private-default"
+data:
+  {{- $bcrypted_pass := index (regexSplit ":" (htpasswd "user" (required "You must specify a default administrator password" $.Values.defaults.password) ) -1) 1 }}
+  users.json: |
+    {
+      "1": {
+        "username": "admin",
+        "name": "Admin",
+        "role": "admin",
+        "homedir": "/",
+        "permissions": "read|write|upload|download|batchdownload|zip",
+        "password": "{{ $bcrypted_pass }}"
+      },
+      "2": {
+        "username": "guest",
+        "name": "Guest",
+        "role": "guest",
+        "homedir": "/",
+        "permissions": "read|write|upload|download|batchdownload|zip",
+        "password": ""
+      }
+    }
+
+  .htaccess: |
+    deny from all
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $.Release.Name }}-init"
+data:
+  init.sh: |
+    #!/usr/local/bin/bash
+    mkdir -v /var/www/filegator/private/tmp
+    mkdir -v /var/www/filegator/private/sessions
+    mkdir -v /var/www/filegator/private/logs
+
+    cp -v /app/default/private/* /var/www/filegator/private/
+
+    chown -Rv 33.33 /var/www/filegator/private/
+    chmod -v 0777 /var/www/filegator/private
+    
+    chown -Rv 33.33 /var/www/filegator/repository/
+    chmod -v 0777 /var/www/filegator/repository
+  run.sh: |
+    #!/bin/bash
+    # This is really horrible but I didn't feel like maintaining my own Docker image for FileGator..
+    sed -ri -e "s/'upload_max_size' => .*\$/'upload_max_size' => ${UPLOAD_MAX_SIZE-1000 * 1024 * 1024},/g" /var/www/filegator/configuration.php
+    exec apache2-foreground
+---

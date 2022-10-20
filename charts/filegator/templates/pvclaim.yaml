@@ -1,0 +1,22 @@
+{{- if $.Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-private"
+  labels:
+    app: "{{ .Release.Name }}"
+    component: private
+spec:
+  {{ toYaml .Values.persistence.private.volume | nindent 2 }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-repository"
+  labels:
+    app: "{{ .Release.Name }}"
+    component: repository
+spec:
+  {{ toYaml .Values.persistence.repository.volume | nindent 2 }}
+---
+{{- end -}}

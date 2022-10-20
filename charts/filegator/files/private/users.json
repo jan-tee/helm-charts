@@ -1,0 +1,19 @@
+{
+  "1": {
+    "username": "admin",
+    "name": "Admin",
+    "role": "admin",
+    "homedir": "/",
+    "permissions": "read|write|upload|download|batchdownload|zip",
+    "password": "$2y$10$/k4h.ZGgzw6KzC1GxXq7ceChSs4klV69kecnjJYUR3JMVlI44BXbe",
+    "plaintext": "loyal-serif-verandah-paper"
+  },
+  "2": {
+    "username": "guest",
+    "name": "Guest",
+    "role": "guest",
+    "homedir": "/",
+    "permissions": "read|write|upload|download|batchdownload|zip",
+    "password": ""
+  }
+}

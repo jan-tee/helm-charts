@@ -1,0 +1,18 @@
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Release.Name }}-http"
+  annotations:
+    {{- $.Values.service.annotations | toYaml | nindent 4 }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "http"
+      protocol: TCP
+      targetPort: 80
+      port: 80
+  selector:
+    app: "{{ $.Release.Name }}"
+    component: filegator
+---

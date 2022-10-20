@@ -1,0 +1,31 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+Deploys the FileGator application with or without persistent storage and with anonymous ("guest") access enabled.
+
+Example deployment:
+
+```bash
+helm repo add tietze.io https://charts.tietze.io
+helm upgrade --install \
+  filegator . \
+  --set persistence.enabled=true \ 
+  --set persistence.repository.volume.storageClassName=nfs \ 
+  --set persistence.private.volume.storageClassName=nfs \ 
+  --set service.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="filegator.customer.lab" \
+  --set defaults.password="mypassword"
+```
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
