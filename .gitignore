@@ -1,3 +1,4 @@
 .dccache
-charts/*/*deploy*.cmd
-charts/*/*deploy*.sh
+*deploy*.cmd
+*deploy*.sh
+
