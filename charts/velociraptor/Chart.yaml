@@ -1,0 +1,11 @@
+apiVersion: v2
+name: velociraptor
+description: Velociraptor Helm chart for deployment in Kubernetes
+type: application
+version: 1.0.0
+appVersion: 0.6.7-4
+home: https://github.com/jan-tee/helm-charts
+maintainers:
+  - name: Jan Tietze
+    email: jan@tietze.io
+    url: http://tietze.io

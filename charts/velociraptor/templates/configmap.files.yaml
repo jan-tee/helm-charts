@@ -1,0 +1,27 @@
+# Configuration files
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-extra" $.Release.Name | quote }}
+data:
+  startup.sh: |
+    {{ $.Files.Get "files/startup.sh" | nindent 4 }}
+---
+# Nginx config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-nginx" $.Release.Name | quote }}
+data:
+  default.conf.template: |
+    server { 
+        listen 80;
+        location / {
+            root /velociraptor/clients/;
+            try_files $uri.ics $uri $uri/ =404;
+            autoindex on;
+            autoindex_format html;
+            autoindex_localtime on;
+        }
+    }
+---

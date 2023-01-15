@@ -1,0 +1,21 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-datastore"
+  labels:
+    app: "{{ .Release.Name }}"
+    component: datastore
+spec:
+  {{ toYaml .Values.persistence.volume | nindent 2 }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-filestore"
+  labels:
+    app: "{{ .Release.Name }}"
+    component: filestore
+spec:
+  {{ toYaml .Values.persistence.volume | nindent 2 }}
+---

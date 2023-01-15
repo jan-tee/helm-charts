@@ -1,0 +1,31 @@
+# -- (string) The image to use. Defaults to ubuntu/bind9 and in the chart's `appVersion`.
+image: ghcr.io/jan-tee/velociraptor-docker/velociraptor:latest
+# -- (string) The name of the registry secret to use
+imagePullSecrets: null
+
+# -- (string) The DNS name that a browser connects to
+server_name: 
+# -- (string) The administrator's user name
+admin_user: admin
+# -- (string) The administrator password
+admin_password: 
+
+# -- Service settings
+service:
+  # -- (string) Service type
+  type: LoadBalancer
+  # -- object Annotations to add to the service
+  annotations: {}
+
+persistence:
+  # -- The data for the `PersistentVolumeClaim` for state storage. Typically you'll want to add at least a storageClassName
+  volume:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+
+tls:
+  # -- (string) Name of the TLS secret
+  secretName: 

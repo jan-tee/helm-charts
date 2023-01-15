@@ -1,0 +1,29 @@
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-master" $.Release.Name | quote }}
+  annotations:
+    {{- $.Values.service.annotations | toYaml | nindent 4 }}
+spec:
+  type: {{ default "LoadBalancer" $.Values.service.type }}
+  ports:
+    - name: "gui"
+      protocol: TCP
+      targetPort: 443
+      port: 443
+    - name: "frontend"
+      protocol: TCP
+      targetPort: 8000
+      port: 8000
+    - name: "api"
+      protocol: TCP
+      targetPort: 8001
+      port: 8001
+    - name: "agent-downloads"
+      protocol: TCP
+      targetPort: 80
+      port: 9000
+  selector:
+    app: velociraptor
+    component: master

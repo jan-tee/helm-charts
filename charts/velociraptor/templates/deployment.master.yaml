@@ -1,0 +1,103 @@
+# GUI (all in one) server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-master" $.Release.Name | quote }}
+  labels:
+    app: velociraptor
+    component: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: velociraptor
+      component: master
+  template:
+    metadata:
+      labels:
+        app: velociraptor
+        component: master
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.files.yaml") . | sha256sum }} # ensure this deployment is recreated on each deployment operation so that updated configmaps will be reloaded
+    spec:
+      {{- if $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecrets | quote }}
+      {{- end }}
+      containers:
+        - name: velociraptor
+          image: {{ $.Values.image | quote }}
+          imagePullPolicy: Always
+          env:
+            - name: SERVER_NAME
+              value: {{ required "You must set the FQDN for the Velociraptor server" $.Values.server_name | quote }}
+            - name: VELOX_USER
+              value: {{ required "You must specify an administrator user for the Velociraptor server" $.Values.admin_user }}
+            - name: VELOX_PASSWORD
+              value: {{ required "You must specify an administrator password for the Velociraptor server" $.Values.admin_password }}
+            - name: VELOX_ROLE
+              value: "administrator"
+          volumeMounts:
+            - name: datastore
+              mountPath: "/velociraptor/datastore"
+            - name: filestore
+              mountPath: "/velociraptor/filestore"
+            - name: extra
+              mountPath: "/velociraptor/extra"
+            - name: certs
+              mountPath: /velociraptor/certs/ca.pem
+              subPath: ca.crt
+            - name: certs
+              mountPath: /velociraptor/certs/server.pem
+              subPath: tls.crt
+            - name: certs
+              mountPath: /velociraptor/certs/server.key
+              subPath: tls.key
+            - name: clients
+              mountPath: "/velociraptor/clients/repacked"
+          command:
+            - /bin/bash
+          args:
+            - /velociraptor/extra/startup.sh
+          # resources:
+          #   limits:
+          #     cpu: 4
+          #     memory: 8000M
+          #   requests:
+          #     cpu: 500m
+          #     memory: 3000M
+        # serves repacked agents including configuration
+        - name: nginx
+          image: nginx
+          env:
+            - name: NGINX_HOST
+              value: {{ required "You must set the FQDN for the Velociraptor server" $.Values.server_name | quote }}
+            - name: NGINX_PORT
+              value: "80"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: "/etc/nginx/templates"
+            - name: clients
+              mountPath: "/velociraptor/clients"
+      volumes:
+        - name: datastore
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-datastore" $.Release.Name | quote }}
+        - name: filestore
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-filestore" $.Release.Name | quote }}
+        - name: extra
+          configMap:
+            name: {{ printf "%s-extra" $.Release.Name | quote }}
+            defaultMode: 0755
+        - name: certs
+          secret:
+            secretName: {{ $.Values.tls.secretName }}
+            defaultMode: 0644
+            optional: false
+        - name: nginx-config
+          configMap:
+            name: {{ printf "%s-nginx" $.Release.Name | quote }}
+            defaultMode: 0644
+        - name: clients
+          emptyDir: {}
