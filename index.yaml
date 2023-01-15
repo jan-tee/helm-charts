@@ -122,4 +122,20 @@ entries:
     urls:
     - https://github.com/jan-tee/helm-charts/releases/download/filegator-1.0.1/filegator-1.0.1.tgz
     version: 1.0.1
-generated: "2022-10-20T10:51:11.462894503Z"
+  velociraptor:
+  - apiVersion: v2
+    appVersion: 0.6.7-4
+    created: "2023-01-15T20:03:54.119207606Z"
+    description: Velociraptor Helm chart for deployment in Kubernetes
+    digest: b196f7b80703c36efbbcb18fa30ced6f3c3a905e2203983a5bea24dcc2c40c9d
+    home: https://github.com/jan-tee/helm-charts
+    maintainers:
+    - email: jan@tietze.io
+      name: Jan Tietze
+      url: http://tietze.io
+    name: velociraptor
+    type: application
+    urls:
+    - https://github.com/jan-tee/helm-charts/releases/download/velociraptor-1.0.0/velociraptor-1.0.0.tgz
+    version: 1.0.0
+generated: "2023-01-15T20:03:54.119251207Z"
